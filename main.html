@@ -526,3 +526,434 @@
       42.7%       { clip-path: inset(30% 0 55% 0); transform: translate(-4px, 1px); }
       43%         { clip-path: inset(60% 0 25% 0); transform: translate(3px, 0); }
       43.2%       { opacity: 0; clip-path: none;
+
+      77%,  77.2% { opacity: 0; }
+      77.3%       { opacity: .8; transform: translate(4px, 1px); clip-path: inset(30% 0 50% 0); }
+      77.5%       { clip-path: inset(55% 0 30% 0); transform: translate(-5px, -1px); }
+      77.7%       { clip-path: inset(80% 0 5% 0); transform: translate(3px, 0); }
+      77.9%       { opacity: 0; clip-path: none; }
+      100%        { opacity: 0; }
+    }
+
+    /* ── TBD panel ── */
+    .tbd-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem 2rem 1.8rem;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .tbd-panel::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(176,109,255,.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .tbd-icon { font-size: 2.6rem; margin-bottom: 1rem; }
+    .tbd-heading {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.1rem; font-weight: 700;
+      color: var(--text); margin-bottom: .75rem;
+      letter-spacing: .05em;
+    }
+    .tbd-sub {
+      color: var(--dim); font-size: .98rem; line-height: 1.8;
+      max-width: 560px; margin: 0 auto 1.2rem;
+    }
+    .tbd-sub b { color: var(--accent); }
+    .tbd-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; margin-bottom: 1.4rem; }
+    .tbd-note {
+      display: inline-flex; align-items: center; gap: .4rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .78rem; color: var(--muted);
+      letter-spacing: .06em;
+      background: rgba(176,109,255,.05);
+      border: 1px solid rgba(176,109,255,.15);
+      border-radius: 8px; padding: .5rem 1rem;
+    }
+    .tbd-blink {
+      color: var(--accent);
+      animation: blink .9s steps(1) infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    footer {
+      text-align: center; padding: 2rem 1rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted); font-size: .85rem;
+      position: relative; z-index: 1;
+    }
+    .footer-logo {
+      font-family: 'Orbitron', monospace;
+      font-size: 1rem; font-weight: 700; margin-bottom: .3rem; color: var(--text);
+    }
+    .footer-logo span { color: var(--accent); }
+
+    #topBtn {
+      position: fixed; bottom: 1.8rem; right: 1.8rem;
+      background: linear-gradient(135deg, var(--accent), var(--neon));
+      color: #000; width: 42px; height: 42px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; font-size: 1.1rem;
+      box-shadow: 0 0 20px rgba(176,109,255,.4);
+      transition: transform .2s, box-shadow .2s;
+      z-index: 200;
+    }
+    #topBtn:hover { transform: translateY(-4px); box-shadow: 0 0 30px rgba(176,109,255,.6); }
+
+    @media (max-width: 680px) {
+      nav { padding: 0 1rem; }
+      .wrap { padding: 1.5rem 1rem 4rem; }
+      .pre-grid { grid-template-columns: 1fr; }
+      .rules-grid { grid-template-columns: 1fr; }
+      .stat-row { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="particles-canvas"></canvas>
+<div class="grid-overlay"></div>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="../index.html" class="nav-logo">Tech<span>Quest</span></a>
+  <ul class="nav-links">
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="../index.html#about">About</a></li>
+    <li><a href="../index.html#events" class="active">Events</a></li>
+  </ul>
+</nav>
+
+<div class="wrap">
+
+  <a href="../index.html#events" class="back-btn">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    Back to Events
+  </a>
+
+  <!-- HERO -->
+  <div class="hero reveal">
+    <div class="cat-pill"><span class="cat-pill-dot"></span>Fun Games</div>
+    <h1 class="hero-title">
+      <span class="line1">ROBOT</span>
+      <span class="line2 glitch-wrap" data-text="SNOOZE">SNOOZE</span>
+    </h1>
+    <p class="hero-tagline">
+      One commands. One obeys. Chaos begins. — A blindfolded teamwork
+      challenge where your only weapon is your voice, and your teammate has to
+      trust every word you say.
+    </p>
+  </div>
+
+  <div class="scanline-bar"></div>
+
+  <!-- META -->
+  <div class="meta-row reveal">
+    <div class="meta-chip"><span class="dot"></span><b>Type:</b>&nbsp;Physical Activity</div>
+    <div class="meta-chip"><span class="dot"></span><b>Mode:</b>&nbsp;Team (2 members)</div>
+    <div class="meta-chip"><span class="dot"></span><b>Duration:</b>&nbsp;5 Hours</div>
+    <div class="meta-chip"><span class="dot"></span><b>Max Teams:</b>&nbsp;15</div>
+    <div class="meta-chip"><span class="dot"></span><b>Open To:</b>&nbsp;Classes 5–9</div>
+    <div class="meta-chip"><span class="dot"></span><b>Venue:</b>&nbsp;School Ground</div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stat-row reveal">
+    <div class="stat-box">
+      <div class="stat-num">15</div>
+      <div class="stat-lbl">Max Teams</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">TBD</div>
+      <div class="stat-lbl">Games Lineup</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">50</div>
+      <div class="stat-lbl">Total Marks</div>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- OVERVIEW -->
+  <div class="sec reveal">
+    <div class="sec-label">// overview</div>
+    <div class="overview-text">
+      <p>
+        Robot Snooze is a high-energy, team-based physical challenge where one student acts as the
+        <b>Guide</b> and the other is the <b>Blindfolded Player</b> — navigating physical games
+        using only verbal instructions from their partner.
+      </p>
+      <p>
+        Teams must rely entirely on clear communication and split-second coordination. Physical
+        contact, gestures, coded signals — all banned. Only your words can steer your teammate
+        through running, dodging, and unpredictable chaos.
+      </p>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- WHAT TO EXPECT -->
+  <div class="sec reveal">
+    <div class="sec-label">// what to expect</div>
+    <div class="tbd-panel">
+      <div class="tbd-icon">🎮</div>
+      <div class="tbd-heading">Games To Be Announced</div>
+      <div class="tbd-sub">
+        Robot Snooze is a <b>physical fun games</b> event — activities will involve running,
+        movement challenges, and coordination tasks played out on the school ground.
+        The blindfolded student must rely entirely on their partner's voice to navigate
+        whatever the hosts throw at them. Expect chaos. Expect laughter. Expect the unexpected.
+      </div>
+      <div class="tbd-tags">
+        <span class="game-tag tag-run">Running</span>
+        <span class="game-tag tag-team">Coordination</span>
+        <span class="game-tag tag-nav">Navigation</span>
+        <span class="game-tag tag-jump">Physical Tasks</span>
+      </div>
+      <div class="tbd-note">
+        <span class="tbd-blink">▋</span>&nbsp;Full game lineup will be revealed on event day
+      </div>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- PRE-EVENT -->
+  <div class="sec reveal">
+    <div class="sec-label">// pre-event — selection round</div>
+    <div class="pre-grid">
+      <div class="pre-card">
+        <div class="pre-card-lbl">When</div>
+        <div class="pre-card-val">2–3 weeks after registration closes</div>
+      </div>
+      <div class="pre-card">
+        <div class="pre-card-lbl">Format</div>
+        <div class="pre-card-val">Coordination-oriented physical activity</div>
+      </div>
+      <div class="pre-card">
+        <div class="pre-card-lbl">Duration</div>
+        <div class="pre-card-val">3 hours</div>
+      </div>
+      <div class="pre-card">
+        <div class="pre-card-lbl">Judging Basis</div>
+        <div class="pre-card-val">Speed + coordination</div>
+      </div>
+      <div class="pre-card">
+        <div class="pre-card-lbl">Who Proceeds</div>
+        <div class="pre-card-val">Top 15 teams</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- EVENT STRUCTURE -->
+  <div class="sec reveal">
+    <div class="sec-label">// event structure</div>
+
+    <div class="round-card">
+      <div class="round-lbl">Final Showdown — 5 Hours</div>
+      <div class="round-name">Robot Snooze — The Gauntlet</div>
+      <div class="round-body">
+        <p>
+          One team member is blindfolded — the <b>Blindfolded Player</b>. The other is the
+          <b>Guide</b>, who must direct their partner through a series of physical fun games
+          using only verbal instructions. Teams are scored on coordination, precision, and speed.
+        </p>
+        <ul>
+          <li>Only <b>verbal instructions</b> are allowed from the Guide</li>
+          <li>The Blindfolded Player must keep the blindfold on at all times during active rounds</li>
+          <li>No physical contact, gestures, or non-verbal signals permitted</li>
+          <li>Teams must stay within the defined activity area on the school ground</li>
+          <li>Safe and controlled movement is required at all times</li>
+          <li>Roles may be swapped between games at the team's discretion</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- JUDGING -->
+  <div class="sec reveal">
+    <div class="sec-label">// judging & scoring</div>
+    <table class="score-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Criterion</th>
+          <th>Marks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>01</td><td>Coordination &amp; Teamwork</td><td>20</td></tr>
+        <tr><td>02</td><td>Control &amp; Precision</td><td>10</td></tr>
+        <tr><td>03</td><td>Time Efficiency</td><td>10</td></tr>
+        <tr><td>04</td><td>Communication Clarity</td><td>10</td></tr>
+        <tr><td></td><td>TOTAL</td><td>50</td></tr>
+      </tbody>
+    </table>
+    <div class="tiebreaker-note">
+      <b>Tiebreaker Protocol:</b> The team completing the full gauntlet in the least time ranks higher. If still tied, judges evaluate communication clarity and controller precision as the final decider.
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- RULES -->
+  <div class="sec reveal">
+    <div class="sec-label">// rules & guidelines</div>
+    <div class="rules-grid">
+      <div class="rule-card allowed">
+        <div class="rule-title">ALLOWED</div>
+        <ul class="rule-list">
+          <li>Verbal communication between Guide and Blindfolded Player</li>
+          <li>Clear and strategic instructions within limits</li>
+          <li>Pre-round team coordination and planning</li>
+          <li>Safe movement within the defined area</li>
+          <li>Role swaps between games</li>
+        </ul>
+      </div>
+      <div class="rule-card banned">
+        <div class="rule-title">NOT ALLOWED</div>
+        <ul class="rule-list">
+          <li>Blindfolded Player removing blindfold during active round</li>
+          <li>Physical guidance — touching, holding, or pushing</li>
+          <li>Gestures or non-verbal signals of any kind</li>
+          <li>Crossing the boundary of the activity area</li>
+          <li>Deliberate interference with other teams</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <hr class="div">
+
+  <!-- HOSTS -->
+  <div class="sec reveal">
+    <div class="sec-label">// event hosts</div>
+    <div class="host-grid">
+      <div class="host-item"><span class="host-tag">Host</span>Aashi Mishra — Class XII-C</div>
+      <div class="host-item"><span class="host-tag">Host</span>Ishant Chauhan — Class XII-B</div>
+      <div class="host-item"><span class="host-tag">Host</span>Shashwat Trivedi — Class XI</div>
+      <div class="host-item"><span class="host-tag">Host</span>Monisha — Class XI</div>
+      <div class="host-item"><span class="host-tag">Host</span>Anika — Class XII-D</div>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<footer>
+  <div class="footer-logo">Tech<span>Quest</span> 2026</div>
+  <div>&copy; 2026 TechQuest Committee — All rights reserved</div>
+</footer>
+
+<a href="#" id="topBtn">↑</a>
+
+<script>
+  /* ── cursor ── */
+  const cur = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  document.addEventListener('mousemove', e => {
+    cur.style.left = e.clientX + 'px';
+    cur.style.top  = e.clientY + 'px';
+    ring.style.left = e.clientX + 'px';
+    ring.style.top  = e.clientY + 'px';
+  });
+  document.querySelectorAll('a, button, .game-card, .stat-box, .meta-chip').forEach(el => {
+    el.addEventListener('mouseenter', () => { cur.classList.add('hovering'); ring.classList.add('hovering'); });
+    el.addEventListener('mouseleave', () => { cur.classList.remove('hovering'); ring.classList.remove('hovering'); });
+  });
+
+  /* ── particles ── */
+  const canvas = document.getElementById('particles-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const COLORS = ['rgba(176,109,255,', 'rgba(34,211,238,', 'rgba(217,70,239,'];
+
+  for (let i = 0; i < 60; i++) {
+    particles.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      r: Math.random() * 1.5 + .3,
+      vx: (Math.random() - .5) * .3,
+      vy: (Math.random() - .5) * .3,
+      col: COLORS[Math.floor(Math.random() * COLORS.length)],
+      a: Math.random() * .6 + .1
+    });
+  }
+
+  function drawParticles() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.col + p.a + ')';
+      ctx.fill();
+    });
+
+    // draw connections
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 120) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(176,109,255,${.12 * (1 - dist/120)})`;
+          ctx.lineWidth = .5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(drawParticles);
+  }
+  drawParticles();
+
+  /* ── scroll reveal ── */
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+  }, { threshold: .08 });
+  reveals.forEach((el, i) => {
+    el.style.transitionDelay = (i * 0.04) + 's';
+    observer.observe(el);
+  });
+
+  /* ── game card hover tilt ── */
+  document.querySelectorAll('.game-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - .5;
+      const y = (e.clientY - rect.top)  / rect.height - .5;
+      card.style.transform = `perspective(500px) rotateX(${-y*8}deg) rotateY(${x*8}deg) translateY(-4px)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+    });
+  });
+</script>
+
+</body>
+</html>
