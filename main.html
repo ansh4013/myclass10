@@ -1,835 +1,528 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TechQuest 2026 – Admin</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg: #050a0f;
-  --surface: #0d1820;
-  --surface2: #132030;
-  --accent: #00e5ff;
-  --accent2: #ff6b35;
-  --green: #00ff9d;
-  --red: #e05c6b;
-  --text: #c8dde8;
-  --muted: #4a6275;
-  --border: rgba(0,229,255,0.15);
-  --border-hover: rgba(0,229,255,0.45);
-}
-*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
-html,body { height:100%; }
-body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; overflow-x:hidden; }
-body::before { content:''; position:fixed; inset:0; background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.025) 2px,rgba(0,0,0,0.025) 4px); pointer-events:none; z-index:9999; }
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Robot Snooze — TechQuest 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── LOGIN ── */
-#loginScreen { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; background:radial-gradient(ellipse at 50% 0%,rgba(0,229,255,0.07) 0%,transparent 60%); }
-.login-card { width:100%; max-width:400px; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:44px 40px; box-shadow:0 0 60px rgba(0,229,255,0.1); animation:fadeUp 0.4s ease; }
-@keyframes fadeUp { from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);} }
-.login-logo { text-align:center; margin-bottom:32px; }
-.logo-main { font-family:'Orbitron',sans-serif; font-size:22px; font-weight:900; background:linear-gradient(135deg,var(--accent),#0099bb); -webkit-background-clip:text; -webkit-text-fill-color:transparent; letter-spacing:4px; }
-.logo-sub  { font-size:10px; color:var(--accent2); letter-spacing:4px; text-transform:uppercase; margin-top:6px; }
-.logo-badge { display:inline-block; font-family:'Orbitron',sans-serif; font-size:10px; color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:2px 10px; margin-top:8px; letter-spacing:2px; }
-.form-group { margin-bottom:18px; }
-.form-group label { display:block; font-size:10px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:8px; }
-.form-group input { width:100%; background:var(--surface2); border:1px solid rgba(0,229,255,0.1); border-radius:8px; padding:12px 16px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; transition:border 0.2s,box-shadow 0.2s; }
-.form-group input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(0,229,255,0.1); }
-.form-group input::placeholder { color:var(--muted); }
-.btn-login { width:100%; background:var(--accent); color:#000; border:none; border-radius:8px; padding:13px; font-family:'Orbitron',sans-serif; font-size:12px; font-weight:700; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:all 0.2s; margin-top:6px; }
-.btn-login:hover { background:#33ecff; box-shadow:0 0 20px rgba(0,229,255,0.4); transform:translateY(-1px); }
-.btn-login:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
-.error-msg { color:var(--red); font-size:12px; margin-top:12px; text-align:center; display:none; }
-
-/* ── HEADER ── */
-#header { display:none; position:fixed; top:0; left:0; right:0; height:58px; background:rgba(5,10,15,0.95); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); z-index:200; padding:0 24px; align-items:center; justify-content:space-between; }
-#header.visible { display:flex; }
-.header-logo { font-family:'Orbitron',sans-serif; font-size:15px; font-weight:700; color:var(--accent); letter-spacing:3px; cursor:pointer; }
-.header-center { font-size:10px; color:var(--muted); letter-spacing:3px; text-transform:uppercase; }
-.btn-logout { background:transparent; color:var(--red); border:1px solid rgba(224,92,107,0.4); border-radius:6px; padding:6px 14px; font-family:'Orbitron',sans-serif; font-size:9px; letter-spacing:1px; text-transform:uppercase; cursor:pointer; transition:all 0.2s; }
-.btn-logout:hover { background:rgba(224,92,107,0.1); }
-
-/* ── LAYOUT ── */
-#adminApp { display:none; padding-top:58px; height:100vh; }
-#adminApp.visible { display:flex; }
-
-.left-panel { width:260px; flex-shrink:0; background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; overflow:hidden; }
-.panel-header { padding:20px; border-bottom:1px solid var(--border); }
-.panel-title { font-family:'Orbitron',sans-serif; font-size:11px; font-weight:700; color:var(--accent); letter-spacing:2px; text-transform:uppercase; margin-bottom:12px; }
-.search-input { width:100%; background:var(--surface2); border:1px solid rgba(0,229,255,0.1); border-radius:6px; padding:9px 12px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:13px; outline:none; transition:border 0.2s; }
-.search-input:focus { border-color:var(--accent); }
-.search-input::placeholder { color:var(--muted); }
-.events-list { flex:1; overflow-y:auto; padding:12px; }
-.events-list::-webkit-scrollbar { width:4px; }
-.events-list::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
-.event-item { padding:12px; border-radius:8px; cursor:pointer; transition:all 0.15s; border:1px solid transparent; margin-bottom:6px; display:flex; align-items:center; justify-content:space-between; }
-.event-item:hover { background:var(--surface2); border-color:var(--border); }
-.event-item.active { background:rgba(0,229,255,0.06); border-color:var(--accent); }
-.event-item-name { font-size:13px; font-weight:500; }
-.event-item.active .event-item-name { color:var(--accent); }
-.event-count-badge { background:var(--surface2); color:var(--accent); border:1px solid var(--border); border-radius:4px; padding:2px 8px; font-size:10px; font-family:'Orbitron',sans-serif; flex-shrink:0; }
-
-.right-panel { flex:1; overflow-y:auto; padding:28px 32px; }
-.right-panel::-webkit-scrollbar { width:5px; }
-.right-panel::-webkit-scrollbar-thumb { background:var(--border); }
-
-/* ── EVENT HEADER ── */
-.event-header-section { margin-bottom:24px; }
-.event-title { font-family:'Orbitron',sans-serif; font-size:22px; font-weight:700; color:var(--accent); letter-spacing:2px; margin-bottom:16px; }
-.stats-row { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:18px; }
-.stat-chip { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:10px 16px; }
-.stat-label { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
-.stat-value { font-family:'Orbitron',sans-serif; font-size:18px; font-weight:700; color:var(--text); }
-.action-btns { display:flex; gap:10px; flex-wrap:wrap; }
-.btn { padding:9px 16px; border-radius:6px; font-family:'Orbitron',sans-serif; font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; border:none; transition:all 0.2s; }
-.btn:hover { transform:translateY(-1px); filter:brightness(1.1); }
-.btn:active { transform:translateY(0); }
-.btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
-.btn-orange { background:var(--accent2); color:#fff; }
-.btn-green  { background:var(--green); color:#000; }
-.btn-cyan   { background:var(--accent); color:#000; }
-.btn-red    { background:var(--red); color:#fff; }
-.btn-muted  { background:var(--surface2); color:var(--text); border:1px solid var(--border); }
-
-/* ── TABS ── */
-.tabs { display:flex; border-bottom:1px solid var(--border); margin-bottom:18px; }
-.tab { padding:10px 20px; font-family:'Orbitron',sans-serif; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; color:var(--muted); border-bottom:2px solid transparent; transition:all 0.15s; background:transparent; border-top:none; border-left:none; border-right:none; }
-.tab:hover { color:var(--text); }
-.tab.active { color:var(--accent); border-bottom-color:var(--accent); }
-
-/* ── FILTER ROW ── */
-.filter-row { display:flex; gap:10px; margin-bottom:16px; align-items:center; flex-wrap:wrap; }
-.filter-input { background:var(--surface2); border:1px solid rgba(0,229,255,0.1); border-radius:6px; padding:9px 12px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:13px; outline:none; width:220px; transition:border 0.2s; }
-.filter-input:focus { border-color:var(--accent); }
-.filter-input::placeholder { color:var(--muted); }
-.sort-select { background:var(--surface2); border:1px solid rgba(0,229,255,0.1); border-radius:6px; padding:9px 12px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:13px; outline:none; cursor:pointer; }
-.sort-dir-btn { background:var(--surface2); border:1px solid rgba(0,229,255,0.1); border-radius:6px; padding:9px 12px; color:var(--accent); font-size:14px; cursor:pointer; transition:all 0.15s; line-height:1; }
-.sort-dir-btn:hover { border-color:var(--accent); background:rgba(0,229,255,0.06); }
-th.sortable { cursor:pointer; user-select:none; transition:color 0.15s; }
-th.sortable:hover { color:var(--text); }
-th.sortable.active { color:var(--accent); }
-.sort-arrow { margin-left:5px; font-size:10px; opacity:0.7; }
-
-/* ── TABLE ── */
-.table-wrap { overflow-x:auto; border-radius:10px; border:1px solid var(--border); }
-table { width:100%; border-collapse:collapse; min-width:640px; }
-thead th { background:var(--surface); color:var(--accent); font-family:'Orbitron',sans-serif; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; padding:13px 14px; text-align:left; position:sticky; top:0; z-index:1; white-space:nowrap; }
-tbody tr { border-bottom:1px solid rgba(0,229,255,0.06); transition:background 0.1s; }
-tbody tr:hover { background:rgba(0,229,255,0.03); }
-tbody td { padding:11px 14px; font-size:13px; vertical-align:middle; }
-.scholar-cell { font-family:'Orbitron',sans-serif; font-size:11px; color:var(--accent); }
-.marks-input { background:var(--surface2); border:1px solid rgba(0,229,255,0.1); border-radius:5px; padding:5px 9px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:13px; outline:none; width:72px; transition:border 0.2s,box-shadow 0.2s; }
-.marks-input:focus { border-color:var(--accent); box-shadow:0 0 0 2px rgba(0,229,255,0.1); }
-.rank-cell { font-family:'Orbitron',sans-serif; font-size:12px; }
-.rank-badge { background:var(--accent2); color:#fff; padding:3px 9px; border-radius:4px; font-size:11px; font-weight:700; }
-.rank-none { color:var(--muted); }
-.btn-select-toggle { padding:5px 12px; border-radius:20px; font-size:11px; font-weight:700; letter-spacing:0.5px; cursor:pointer; border:none; transition:all 0.2s; white-space:nowrap; }
-.btn-select-toggle.yes { background:rgba(0,255,157,0.15); color:var(--green); border:1px solid rgba(0,255,157,0.4); }
-.btn-select-toggle.yes:hover { background:rgba(0,255,157,0.25); }
-.btn-select-toggle.no { background:var(--surface2); color:var(--muted); border:1px solid var(--border); }
-.btn-select-toggle.no:hover { background:rgba(0,229,255,0.08); color:var(--text); border-color:var(--border-hover); }
-.btn-select-toggle:disabled { opacity:0.5; cursor:not-allowed; }
-.saving-dot { display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--accent); animation:pulse 0.8s infinite; }
-@keyframes pulse { 0%,100%{opacity:1;}50%{opacity:0.3;} }
-.team-input { background:var(--surface2); border:1px solid rgba(0,229,255,0.06); border-radius:5px; padding:5px 9px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:12px; outline:none; width:100px; transition:border 0.2s; }
-.team-input:focus { border-color:var(--accent); }
-
-/* ── BULK BAR ── */
-.bulk-bar { display:flex; align-items:center; gap:10px; margin-top:14px; padding:12px 16px; background:var(--surface); border:1px solid var(--border); border-radius:8px; flex-wrap:wrap; }
-.bulk-info { font-size:12px; color:var(--muted); flex:1; }
-
-/* ── EMPTY / LOADING ── */
-.empty-state { text-align:center; padding:60px 20px; color:var(--muted); }
-.empty-state .ei { font-size:40px; display:block; margin-bottom:12px; }
-.no-event-selected { display:flex; flex-direction:column; align-items:center; justify-content:center; height:60vh; color:var(--muted); gap:12px; }
-.no-event-selected .ni { font-size:48px; }
-
-/* ── MODAL ── */
-.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:500; display:none; align-items:center; justify-content:center; padding:20px; }
-.modal-overlay.open { display:flex; }
-.modal { background:var(--surface); border:1px solid var(--border-hover); border-radius:14px; padding:32px; max-width:400px; width:100%; box-shadow:0 0 60px rgba(0,229,255,0.1); animation:fadeUp 0.3s ease; }
-.modal-title { font-family:'Orbitron',sans-serif; font-size:14px; font-weight:700; color:var(--accent); letter-spacing:2px; margin-bottom:14px; }
-.modal-body { font-size:14px; color:var(--text); margin-bottom:20px; line-height:1.6; }
-.modal-input { width:100%; background:var(--surface2); border:1px solid rgba(0,229,255,0.15); border-radius:7px; padding:11px 14px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; margin-bottom:16px; transition:border 0.2s; }
-.modal-input:focus { border-color:var(--accent); }
-.modal-actions { display:flex; gap:10px; justify-content:flex-end; }
-
-/* ── TOAST ── */
-#toastContainer { position:fixed; bottom:24px; right:24px; z-index:9998; display:flex; flex-direction:column; gap:10px; }
-.toast { background:var(--surface); border-radius:8px; padding:12px 18px; font-size:13px; min-width:200px; box-shadow:0 4px 20px rgba(0,0,0,0.4); animation:slideUp 0.3s ease; display:flex; align-items:center; gap:10px; }
-.toast.success { border:1px solid rgba(0,255,157,0.4); color:var(--green); }
-.toast.error   { border:1px solid rgba(224,92,107,0.4); color:var(--red); }
-@keyframes slideUp   { from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);} }
-@keyframes slideDown { from{opacity:1;transform:translateY(0);}to{opacity:0;transform:translateY(20px);} }
-
-/* ── MOBILE ── */
-.mobile-panel-toggle { display:none; position:fixed; bottom:20px; right:20px; z-index:300; background:var(--accent); color:#000; border:none; border-radius:50%; width:48px; height:48px; font-size:20px; cursor:pointer; box-shadow:0 4px 16px rgba(0,229,255,0.4); align-items:center; justify-content:center; }
-@media(max-width:900px) {
-  #adminApp.visible { flex-direction:column; height:auto; min-height:calc(100vh - 58px); }
-  .left-panel { width:100%; height:auto; max-height:0; overflow:hidden; transition:max-height 0.35s ease; border-right:none; border-bottom:1px solid var(--border); }
-  .left-panel.open { max-height:55vh; }
-  .events-list { max-height:calc(55vh - 80px); }
-  .mobile-panel-toggle { display:flex; }
-  .right-panel { padding:16px 14px; flex:1; }
-  .header-center { display:none; }
-  #header { padding:0 14px; }
-  .stats-row { gap:10px; }
-  .stat-chip { padding:8px 12px; flex:1; min-width:80px; }
-  .stat-value { font-size:15px; }
-  .action-btns { gap:8px; }
-  .btn { padding:8px 12px; font-size:9px; }
-  .filter-row { flex-wrap:wrap; gap:8px; }
-  .filter-input { width:100%; }
-  .sort-select { flex:1; }
-  .table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
-  table { min-width:560px; }
-  thead th { padding:11px 10px; font-size:9px; }
-  tbody td { padding:9px 10px; font-size:12px; }
-  .marks-input { width:60px; }
-  .team-input { width:80px; }
-  .bulk-bar { flex-wrap:wrap; gap:8px; }
-  .bulk-info { width:100%; }
-  .modal { padding:24px 18px; }
-  #toastContainer { bottom:14px; right:14px; left:14px; }
-  .toast { min-width:unset; width:100%; }
-}
-@media(max-width:480px) {
-  .event-title { font-size:16px; }
-  .tabs { overflow-x:auto; }
-  .tab { padding:9px 14px; font-size:9px; white-space:nowrap; }
-  .btn { padding:7px 10px; font-size:9px; letter-spacing:0.5px; }
-  .stat-chip { min-width:70px; }
-  .stat-value { font-size:13px; }
-}
-</style>
-</head>
-<body>
-
-<!-- LOGIN -->
-<div id="loginScreen">
-  <div class="login-card">
-    <div class="login-logo">
-      <div class="logo-main">TECHQUEST</div>
-      <div class="logo-sub">Admin Panel</div>
-      <div class="logo-badge">2026</div>
-    </div>
-    <div class="form-group">
-      <label for="passInput">Admin Password</label>
-      <input type="password" id="passInput" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()">
-    </div>
-    <button class="btn-login" id="loginBtn" onclick="doLogin()">LOGIN</button>
-    <div class="error-msg" id="loginErr">Invalid password</div>
-  </div>
-</div>
-
-<!-- HEADER -->
-<header id="header">
-  <span class="header-logo" onclick="location.reload()">TECHQUEST ADMIN</span>
-  <span class="header-center">Event Management</span>
-  <button class="btn-logout" onclick="doLogout()">Logout</button>
-</header>
-
-<!-- ADMIN APP -->
-<div id="adminApp">
-  <div class="left-panel">
-    <div class="panel-header">
-      <div class="panel-title">📊 Events</div>
-      <input class="search-input" id="eventSearch" placeholder="Search event..." oninput="filterEventList()">
-    </div>
-    <div class="events-list" id="eventsList">
-      <div class="empty-state"><span class="ei">⟳</span><small>Loading events...</small></div>
-    </div>
-  </div>
-  <div class="right-panel" id="rightPanel">
-    <div class="no-event-selected">
-      <span class="ni">🎯</span>
-      <div style="font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:2px;">SELECT AN EVENT</div>
-      <div style="font-size:13px;">Choose an event from the left panel to manage it.</div>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: Mark Entry -->
-<div class="modal-overlay" id="markModal">
-  <div class="modal">
-    <div class="modal-title">Set Marks</div>
-    <div class="modal-body" id="markModalBody">Apply marks to selected students.</div>
-    <input class="modal-input" type="number" id="markModalInput" placeholder="Enter marks (0–10)" min="0" max="10" step="0.1">
-    <div class="modal-actions">
-      <button class="btn btn-muted" onclick="closeModal('markModal')">Cancel</button>
-      <button class="btn btn-cyan" onclick="applyBulkMarks()">Apply</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: Confirm Delete -->
-<div class="modal-overlay" id="deleteModal">
-  <div class="modal">
-    <div class="modal-title" style="color:var(--red)">Confirm Remove</div>
-    <div class="modal-body" id="deleteModalBody">Remove selected students from view?</div>
-    <div class="modal-actions">
-      <button class="btn btn-muted" onclick="closeModal('deleteModal')">Cancel</button>
-      <button class="btn btn-red" onclick="confirmDelete()">Remove</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: Auto Rank -->
-<div class="modal-overlay" id="rankModal">
-  <div class="modal">
-    <div class="modal-title">Auto-Rank Students</div>
-    <div class="modal-body">Rank all students in this event by marks? Higher marks = lower rank number (1 = best). Ties share the same rank.</div>
-    <div class="modal-actions">
-      <button class="btn btn-muted" onclick="closeModal('rankModal')">Cancel</button>
-      <button class="btn btn-orange" onclick="doAutoRank()">Proceed</button>
-    </div>
-  </div>
-</div>
-
-<button class="mobile-panel-toggle" id="mobilePanelToggle" onclick="toggleMobilePanel()" title="Show/hide events">☰</button>
-<div id="toastContainer"></div>
-
-<script>
-const API_URL    = 'https://script.google.com/macros/s/AKfycbwocJsGoXNoWuPPjvz5e7rorhMXzEDHNdrYlkHvCVDQZPR_50s7N4uDD9J3SQlsrvjtig/exec';
-const ADMIN_PASS = 'techquest2026';
-
-let allEvents      = {};   // { eventName: [students] }
-let eventNames     = [];
-let currentEvent   = null;
-let allStudents    = [];   // unfiltered list for current event
-let currentStudents = [];  // after filter/sort
-let currentTab     = 'ALL';
-let filterText     = '';
-let sortField      = 'name';
-let sortDir        = 'asc';
-
-// ── LOGIN ──
-window.addEventListener('load', () => {
-  if (sessionStorage.getItem('tq_admin_login')) { showApp(); fetchAllData(); }
-});
-
-function doLogin() {
-  const pass = document.getElementById('passInput').value.trim();
-  const err  = document.getElementById('loginErr');
-  err.style.display = 'none';
-  if (!pass) { err.textContent = 'Please enter password'; err.style.display = 'block'; return; }
-  if (pass !== ADMIN_PASS) { err.textContent = 'Invalid password'; err.style.display = 'block'; return; }
-  sessionStorage.setItem('tq_admin_login', 'true');
-  showApp();
-  fetchAllData();
-}
-
-function doLogout() { sessionStorage.removeItem('tq_admin_login'); location.reload(); }
-
-function showApp() {
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('header').classList.add('visible');
-  document.getElementById('adminApp').classList.add('visible');
-}
-
-// ── API HELPERS ──
-async function fetchAPI(url) {
-  try {
-    const res = await fetch(url, { redirect: 'follow' });
-    return JSON.parse(await res.text());
-  } catch(e) {
-    console.error('fetchAPI error:', e);
-    return null;
-  }
-}
-
-async function nocorsAction(params = {}) {
-  try {
-    const qs  = new URLSearchParams(params).toString();
-    const res = await fetch(`${API_URL}?${qs}`, { redirect: 'follow' });
-    const txt = await res.text();
-    try { return JSON.parse(txt); } catch(e) { return { success: true }; }
-  } catch(e) {
-    console.error('nocorsAction error:', e);
-    return null;
-  }
-}
-
-// ── FULL DATA LOAD (login + manual full refresh) ──
-async function fetchAllData() {
-  const list = document.getElementById('eventsList');
-  list.innerHTML = '<div class="empty-state"><span class="ei">⟳</span><small>Loading...</small></div>';
-
-  const data = await fetchAPI(`${API_URL}?path=admin/events&password=${ADMIN_PASS}`);
-  if (!data || data.error) {
-    list.innerHTML = '<div class="empty-state">Failed to load events</div>';
-    showToast('Failed to load event data', 'error');
-    return;
-  }
-
-  allEvents  = data;
-  eventNames = Object.keys(data).sort();
-  renderEventList();
-
-  if (eventNames.length > 0 && !currentEvent) {
-    selectEvent(eventNames[0]);
-  } else if (currentEvent) {
-    selectEvent(currentEvent);
-  }
-}
-
-// ── SINGLE-EVENT REFRESH (after auto-rank or explicit refresh button) ──
-// Uses ?event= filter so the backend only reads rows for this event
-async function refreshCurrentEvent() {
-  if (!currentEvent) return;
-  showToast('Refreshing event...', 'success');
-
-  const rows = await fetchAPI(`${API_URL}?path=admin/events&password=${ADMIN_PASS}&event=${encodeURIComponent(currentEvent)}`);
-  if (!rows || rows.error) { showToast('Refresh failed', 'error'); return; }
-
-  allEvents[currentEvent] = Array.isArray(rows) ? rows : [];
-  allStudents = allEvents[currentEvent];
-  renderEventList();
-  renderRightPanel();
-  showToast('Event refreshed', 'success');
-}
-
-// ── EVENT LIST ──
-function renderEventList() {
-  const list  = document.getElementById('eventsList');
-  const query = document.getElementById('eventSearch').value.toLowerCase();
-  const filtered = eventNames.filter(n => n.toLowerCase().includes(query));
-
-  if (filtered.length === 0) {
-    list.innerHTML = '<div class="empty-state" style="padding:30px 10px;font-size:12px;color:var(--muted)">No events found</div>';
-    return;
-  }
-
-  list.innerHTML = '';
-  filtered.forEach(name => {
-    const count = (allEvents[name] || []).length;
-    const item  = document.createElement('div');
-    item.className = 'event-item' + (name === currentEvent ? ' active' : '');
-    item.innerHTML = `<span class="event-item-name">${name}</span><span class="event-count-badge">${count}</span>`;
-    item.onclick = () => selectEvent(name);
-    list.appendChild(item);
-  });
-}
-
-function filterEventList() { renderEventList(); }
-
-function selectEvent(name) {
-  currentEvent = name;
-  currentTab   = 'ALL';
-  filterText   = '';
-  sortField    = 'name';
-  sortDir      = 'asc';
-  renderEventList();
-  renderRightPanel();
-  const panel = document.querySelector('.left-panel');
-  const btn   = document.getElementById('mobilePanelToggle');
-  if (panel && window.innerWidth <= 900) { panel.classList.remove('open'); if (btn) btn.textContent = '☰'; }
-}
-
-// ── RIGHT PANEL ──
-function renderRightPanel() {
-  if (!currentEvent) return;
-  allStudents = allEvents[currentEvent] || [];
-
-  const rp = document.getElementById('rightPanel');
-  rp.innerHTML = `
-    <div class="event-header-section">
-      <div class="event-title">${currentEvent}</div>
-      <div class="stats-row">
-        <div class="stat-chip"><div class="stat-label">Total</div><div class="stat-value" id="statTotal">${allStudents.length}</div></div>
-        <div class="stat-chip"><div class="stat-label">Marked</div><div class="stat-value" id="statMarked">${allStudents.filter(s=>parseFloat(s.marks)>0).length}</div></div>
-        <div class="stat-chip"><div class="stat-label">Pending</div><div class="stat-value" id="statPending">${allStudents.filter(s=>!(parseFloat(s.marks)>0)).length}</div></div>
-        <div class="stat-chip"><div class="stat-label">Selected</div><div class="stat-value" id="statSelected">${allStudents.filter(s=>String(s.selected).toUpperCase()==='TRUE').length}</div></div>
-      </div>
-      <div class="action-btns">
-        <button class="btn btn-orange" onclick="openModal('rankModal')">⚡ Auto-Rank</button>
-        <button class="btn btn-green"  onclick="exportCSV()">⬇ Export CSV</button>
-        <button class="btn btn-cyan"   onclick="refreshCurrentEvent()">↺ Refresh Event</button>
-        <button class="btn btn-muted"  onclick="fetchAllData()">↺ Full Refresh</button>
-      </div>
-    </div>
-    <div class="tabs">
-      <button class="tab ${currentTab==='ALL'     ?'active':''}" onclick="setTab('ALL')">All</button>
-      <button class="tab ${currentTab==='SELECTED'?'active':''}" onclick="setTab('SELECTED')">Selected</button>
-      <button class="tab ${currentTab==='TEAMS'   ?'active':''}" onclick="setTab('TEAMS')">Teams</button>
-    </div>
-    <div class="filter-row">
-      <input class="filter-input" id="studentFilter" placeholder="Search by scholar or name..." oninput="applyFilter()" value="${filterText}">
-      <select class="sort-select" id="sortSelect" onchange="setSort(this.value)">
-        <option value="name"      ${sortField==='name'     ?'selected':''}>Sort: Name</option>
-        <option value="scholarNo" ${sortField==='scholarNo'?'selected':''}>Sort: Scholar #</option>
-        <option value="class"     ${sortField==='class'    ?'selected':''}>Sort: Class</option>
-        <option value="marks"     ${sortField==='marks'    ?'selected':''}>Sort: Marks</option>
-        <option value="rank"      ${sortField==='rank'     ?'selected':''}>Sort: Rank</option>
-        <option value="selected"  ${sortField==='selected' ?'selected':''}>Sort: Selected</option>
-      </select>
-      <button class="sort-dir-btn" id="sortDirBtn" onclick="toggleSortDir()">${sortDir==='asc'?'↑':'↓'}</button>
-      <button class="btn btn-muted" onclick="selectAll(true)">Select All</button>
-      <button class="btn btn-muted" onclick="selectAll(false)">Deselect All</button>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th><input type="checkbox" class="cb-selected" id="masterCb" onchange="masterCheck(this)"></th>
-            <th class="sortable ${sortField==='scholarNo'?'active':''}" onclick="setSort('scholarNo')">Scholar #<span class="sort-arrow">${sortField==='scholarNo'?(sortDir==='asc'?'↑':'↓'):''}</span></th>
-            <th class="sortable ${sortField==='name'     ?'active':''}" onclick="setSort('name')">Name<span class="sort-arrow">${sortField==='name'?(sortDir==='asc'?'↑':'↓'):''}</span></th>
-            <th class="sortable ${sortField==='class'    ?'active':''}" onclick="setSort('class')">Class<span class="sort-arrow">${sortField==='class'?(sortDir==='asc'?'↑':'↓'):''}</span></th>
-            <th>Selected</th>
-            <th class="sortable ${sortField==='marks'    ?'active':''}" onclick="setSort('marks')">Marks<span class="sort-arrow">${sortField==='marks'?(sortDir==='asc'?'↑':'↓'):''}</span></th>
-            <th class="sortable ${sortField==='rank'     ?'active':''}" onclick="setSort('rank')">Rank<span class="sort-arrow">${sortField==='rank'?(sortDir==='asc'?'↑':'↓'):''}</span></th>
-            <th>Team</th>
-          </tr>
-        </thead>
-        <tbody id="studentTbody"></tbody>
-      </table>
-    </div>
-    <div class="bulk-bar">
-      <span class="bulk-info" id="bulkInfo">0 selected</span>
-      <button class="btn btn-cyan" onclick="openMarkModal()">Set Marks</button>
-      <button class="btn btn-red"  onclick="openDeleteModal()">Remove Selected</button>
-    </div>
-  `;
-
-  applyFilter();
-}
-
-// ── FILTER / SORT ──
-function setTab(tab) { currentTab = tab; renderRightPanel(); }
-
-function setSort(field) {
-  if (sortField === field) {
-    sortDir = sortDir === 'asc' ? 'desc' : 'asc';
-  } else {
-    sortField = field;
-    sortDir   = (field === 'marks' || field === 'rank') ? 'desc' : 'asc';
-  }
-  const sel    = document.getElementById('sortSelect');
-  const dirBtn = document.getElementById('sortDirBtn');
-  if (sel)    sel.value    = sortField;
-  if (dirBtn) dirBtn.textContent = sortDir === 'asc' ? '↑' : '↓';
-  applyFilter();
-}
-
-function toggleSortDir() {
-  sortDir = sortDir === 'asc' ? 'desc' : 'asc';
-  const dirBtn = document.getElementById('sortDirBtn');
-  if (dirBtn) dirBtn.textContent = sortDir === 'asc' ? '↑' : '↓';
-  applyFilter();
-}
-
-function applyFilter() {
-  const query = (document.getElementById('studentFilter')?.value || '').toLowerCase();
-  filterText  = query;
-  let list    = [...allStudents];
-
-  if (currentTab === 'SELECTED') list = list.filter(s => String(s.selected).toUpperCase() === 'TRUE');
-  if (currentTab === 'TEAMS')    list = list.filter(s => s.teamName);
-  if (query) list = list.filter(s =>
-    String(s.scholarNo).toLowerCase().includes(query) ||
-    String(s.name).toLowerCase().includes(query)
-  );
-
-  list.sort((a, b) => {
-    let aVal, bVal;
-    if (sortField === 'marks' || sortField === 'rank') {
-      aVal = parseFloat(a[sortField]) || 0;
-      bVal = parseFloat(b[sortField]) || 0;
-      return sortDir === 'asc' ? aVal - bVal : bVal - aVal;
-    } else if (sortField === 'selected') {
-      aVal = String(a.selected).toUpperCase() === 'TRUE' ? 1 : 0;
-      bVal = String(b.selected).toUpperCase() === 'TRUE' ? 1 : 0;
-      return sortDir === 'asc' ? aVal - bVal : bVal - aVal;
-    } else if (sortField === 'scholarNo') {
-      aVal = parseFloat(a.scholarNo) || a.scholarNo || '';
-      bVal = parseFloat(b.scholarNo) || b.scholarNo || '';
-      if (typeof aVal === 'number') return sortDir === 'asc' ? aVal - bVal : bVal - aVal;
-    } else {
-      aVal = String(a[sortField] || '').toLowerCase();
-      bVal = String(b[sortField] || '').toLowerCase();
+    :root {
+      --bg:       #050710;
+      --surface:  #0b0e1f;
+      --surface2: #0f1228;
+      --border:   #1a1f3a;
+      --accent:   #b06dff;
+      --accent2:  #7c3aed;
+      --neon:     #d946ef;
+      --cyan:     #22d3ee;
+      --green:    #4ade80;
+      --text:     #e2e8f0;
+      --muted:    #64748b;
+      --dim:      #94a3b8;
     }
-    if (aVal < bVal) return sortDir === 'asc' ? -1 : 1;
-    if (aVal > bVal) return sortDir === 'asc' ?  1 : -1;
-    return 0;
-  });
 
-  currentStudents = list;
-  renderTable();
-}
+    html { scroll-behavior: smooth; }
 
-// ── TABLE ──
-function renderTable() {
-  const tbody = document.getElementById('studentTbody');
-  if (!tbody) return;
-  if (currentStudents.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><span class="ei">🔍</span>No students found</div></td></tr>`;
-    return;
-  }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 400;
+      line-height: 1.7;
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: none;
+    }
 
-  tbody.innerHTML = '';
-  currentStudents.forEach((s, i) => {
-    const hasRank    = parseInt(s.rank) > 0;
-    const isSelected = String(s.selected).toUpperCase() === 'TRUE';
-    const tr         = document.createElement('tr');
-    tr.innerHTML = `
-      <td><input type="checkbox" class="cb-selected row-cb" data-i="${i}" onchange="updateBulkInfo()"></td>
-      <td class="scholar-cell">${s.scholarNo}</td>
-      <td>${s.name}</td>
-      <td>${s.class || '—'}</td>
-      <td>
-        <button class="btn-select-toggle ${isSelected ? 'yes' : 'no'}"
-          id="selbtn_${s.scholarNo}"
-          data-scholar="${s.scholarNo}"
-          data-selected="${isSelected}"
-          onclick="toggleSelected(this)">
-          ${isSelected ? '✓ Selected' : '+ Select'}
-        </button>
-      </td>
-      <td>
-        <input class="marks-input" type="number" min="0" max="10" step="0.1"
-          value="${parseFloat(s.marks) || ''}" placeholder="0–10"
-          data-scholar="${s.scholarNo}"
-          onblur="saveMarks(this)"
-          onkeydown="if(event.key==='Enter'){this.blur();}">
-        <span class="saving-dot" id="dot_${s.scholarNo}" style="display:none;margin-left:6px;"></span>
-      </td>
-      <td class="rank-cell">${hasRank ? `<span class="rank-badge">#${s.rank}</span>` : '<span class="rank-none">—</span>'}</td>
-      <td>
-        <input class="team-input" type="text" value="${s.teamName||''}" placeholder="Team name"
-          data-scholar="${s.scholarNo}"
-          onblur="saveTeam(this)"
-          onkeydown="if(event.key==='Enter'){this.blur();}">
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
-  updateBulkInfo();
-}
+    /* ── custom cursor ── */
+    .cursor {
+      width: 14px; height: 14px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform .08s, background .2s, width .2s, height .2s;
+      mix-blend-mode: screen;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1.5px solid rgba(176,109,255,.5);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform .18s ease, border-color .2s;
+    }
+    .cursor.hovering { width: 20px; height: 20px; background: var(--neon); }
+    .cursor-ring.hovering { width: 52px; height: 52px; border-color: var(--neon); }
 
-// ── MARKS SAVE ──
-async function saveMarks(input) {
-  const scholar = input.getAttribute('data-scholar');
-  const val     = parseFloat(input.value);
-  if (isNaN(val) || val < 0 || val > 10) { showToast('Marks must be 0–10', 'error'); return; }
+    /* ── canvas bg ── */
+    #particles-canvas {
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none; opacity: .6;
+    }
 
-  const dot = document.getElementById('dot_' + scholar);
-  if (dot) dot.style.display = 'inline-block';
+    /* ── grid overlay ── */
+    .grid-overlay {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(176,109,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(176,109,255,.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
 
-  const res = await nocorsAction({
-    path: 'admin/marks', password: ADMIN_PASS,
-    eventName: currentEvent, scholarNo: scholar, marks: val
-  });
+    /* ── nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem; height: 64px;
+      background: rgba(5,7,16,.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(176,109,255,.15);
+    }
+    .nav-logo {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.1rem; font-weight: 700;
+      color: var(--text); text-decoration: none;
+      letter-spacing: .05em;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { list-style: none; display: flex; gap: 2rem; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none;
+      font-size: .9rem; font-weight: 500; letter-spacing: .06em;
+      text-transform: uppercase;
+      transition: color .2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
 
-  if (dot) dot.style.display = 'none';
+    /* ── page wrap ── */
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 6rem;
+      position: relative; z-index: 1;
+    }
 
-  if (res && res.success) {
-    const student = allStudents.find(s => String(s.scholarNo) === String(scholar));
-    if (student) student.marks = val;
-    showToast('Marks saved', 'success');
-    updateStats();
-  } else {
-    showToast('Failed to save marks', 'error');
-  }
-}
+    /* ── back ── */
+    .back-btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      color: var(--muted); text-decoration: none;
+      font-size: .82rem; font-weight: 600;
+      letter-spacing: .1em; text-transform: uppercase;
+      margin-bottom: 2.5rem;
+      transition: color .2s;
+    }
+    .back-btn:hover { color: var(--accent); }
+    .back-btn svg { transition: transform .2s; }
+    .back-btn:hover svg { transform: translateX(-4px); }
 
-// ── TEAM SAVE ──
-async function saveTeam(input) {
-  const scholar = input.getAttribute('data-scholar');
-  const val     = input.value.trim();
+    /* ── hero ── */
+    .hero { margin-bottom: 2rem; position: relative; }
 
-  const res = await nocorsAction({
-    path: 'admin/teamname', password: ADMIN_PASS,
-    eventName: currentEvent, scholarNo: scholar, teamName: val
-  });
+    .cat-pill {
+      display: inline-flex; align-items: center; gap: .45rem;
+      padding: .3rem .9rem;
+      border-radius: 999px;
+      font-size: .72rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      background: rgba(176,109,255,.08);
+      color: var(--accent);
+      border: 1px solid rgba(176,109,255,.25);
+      margin-bottom: 1.2rem;
+    }
+    .cat-pill-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+      animation: pulse-dot 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .4; transform: scale(.6); }
+    }
 
-  if (res && res.success) {
-    const student = allStudents.find(s => String(s.scholarNo) === String(scholar));
-    if (student) student.teamName = val;
-    showToast('Team name saved', 'success');
-  } else {
-    showToast('Failed to save team name', 'error');
-  }
-}
+    .hero-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -.01em;
+      margin-bottom: 1rem;
+    }
+    .hero-title .line1 { display: block; color: var(--text); }
+    .hero-title .line2 {
+      display: block;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--neon) 60%, var(--cyan) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      animation: hue-shift 5s linear infinite;
+    }
+    @keyframes hue-shift {
+      0%   { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
 
-// ── TOGGLE SELECTED ──
-async function toggleSelected(btn) {
-  const scholar    = btn.getAttribute('data-scholar');
-  const currentVal = btn.getAttribute('data-selected') === 'true';
-  const newVal     = !currentVal;
+    .hero-tagline {
+      color: var(--dim); font-size: 1.1rem; max-width: 580px;
+      font-weight: 400; line-height: 1.7;
+    }
 
-  btn.disabled    = true;
-  btn.textContent = 'Saving...';
+    /* ── scanline ── */
+    .scanline-bar {
+      width: 100%; height: 2px; margin: 2rem 0;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--neon), var(--cyan), transparent);
+      position: relative; overflow: hidden;
+    }
+    .scanline-bar::after {
+      content: '';
+      position: absolute; top: 0; left: -60%;
+      width: 60%; height: 100%;
+      background: linear-gradient(90deg, transparent, #fff, transparent);
+      animation: scan 2.5s linear infinite;
+    }
+    @keyframes scan { to { left: 160%; } }
 
-  const res = await nocorsAction({
-    path: 'admin/selected', password: ADMIN_PASS,
-    eventName: currentEvent, scholarNo: scholar, selected: newVal
-  });
+    /* ── meta chips ── */
+    .meta-row { display: flex; flex-wrap: wrap; gap: .6rem; margin-bottom: 2.5rem; }
+    .meta-chip {
+      display: flex; align-items: center; gap: .5rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: .45rem .9rem;
+      font-size: .85rem; color: var(--text);
+      font-weight: 500;
+      transition: border-color .2s, background .2s;
+    }
+    .meta-chip:hover { border-color: rgba(176,109,255,.4); background: var(--surface2); }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
 
-  btn.disabled = false;
-  if (res && res.success) {
-    const student = allStudents.find(s => String(s.scholarNo) === String(scholar));
-    if (student) student.selected = newVal ? 'TRUE' : 'FALSE';
-    btn.setAttribute('data-selected', String(newVal));
-    btn.className   = `btn-select-toggle ${newVal ? 'yes' : 'no'}`;
-    btn.textContent = newVal ? '✓ Selected' : '+ Select';
-    showToast(newVal ? `${scholar} marked selected` : `${scholar} deselected`, 'success');
-    updateStats();
-  } else {
-    btn.textContent = currentVal ? '✓ Selected' : '+ Select';
-    showToast('Failed to update selection', 'error');
-  }
-}
+    /* ── section label ── */
+    .sec-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .7rem; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--cyan);
+      margin-bottom: 1.2rem;
+      display: flex; align-items: center; gap: .75rem;
+    }
+    .sec-label::after {
+      content: '';
+      flex: 1; height: 1px;
+      background: linear-gradient(90deg, rgba(34,211,238,.3), transparent);
+    }
 
-// ── STATS ──
-function updateStats() {
-  const s = allStudents;
-  const el = (id) => document.getElementById(id);
-  if (el('statTotal'))    el('statTotal').textContent    = s.length;
-  if (el('statMarked'))   el('statMarked').textContent   = s.filter(x => parseFloat(x.marks) > 0).length;
-  if (el('statPending'))  el('statPending').textContent  = s.filter(x => !(parseFloat(x.marks) > 0)).length;
-  if (el('statSelected')) el('statSelected').textContent = s.filter(x => String(x.selected).toUpperCase() === 'TRUE').length;
-}
+    /* ── overview ── */
+    .overview-text { color: var(--dim); font-size: 1.05rem; line-height: 1.8; }
+    .overview-text b { color: var(--accent); font-weight: 700; }
+    .overview-text p + p { margin-top: .85rem; }
 
-// ── BULK ──
-function updateBulkInfo() {
-  const cbs  = document.querySelectorAll('.row-cb:checked');
-  const info = document.getElementById('bulkInfo');
-  if (info) info.textContent = `${cbs.length} selected`;
-}
+    /* ── GAMES GRID ── */
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem; margin-top: 1rem;
+    }
+    .game-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.4rem;
+      position: relative; overflow: hidden;
+      transition: transform .25s, border-color .25s, box-shadow .25s;
+      cursor: default;
+    }
+    .game-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(176,109,255,.06), transparent 60%);
+      opacity: 0; transition: opacity .25s;
+    }
+    .game-card:hover { transform: translateY(-4px); border-color: rgba(176,109,255,.35); box-shadow: 0 8px 30px rgba(176,109,255,.12); }
+    .game-card:hover::before { opacity: 1; }
+    .game-icon {
+      font-size: 2rem; margin-bottom: .8rem;
+      display: block;
+      transition: transform .25s;
+    }
+    .game-card:hover .game-icon { transform: scale(1.15) rotate(-4deg); }
+    .game-name {
+      font-family: 'Orbitron', monospace;
+      font-size: .85rem; font-weight: 700;
+      color: var(--text); margin-bottom: .5rem;
+      letter-spacing: .04em;
+    }
+    .game-desc { color: var(--dim); font-size: .88rem; line-height: 1.6; }
+    .game-tag {
+      display: inline-block; margin-top: .75rem;
+      padding: .2rem .6rem;
+      border-radius: 6px;
+      font-size: .68rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+    }
+    .tag-run { background: rgba(74,222,128,.1); color: var(--green); border: 1px solid rgba(74,222,128,.2); }
+    .tag-jump { background: rgba(34,211,238,.1); color: var(--cyan); border: 1px solid rgba(34,211,238,.2); }
+    .tag-nav { background: rgba(217,70,239,.1); color: var(--neon); border: 1px solid rgba(217,70,239,.2); }
+    .tag-team { background: rgba(176,109,255,.1); color: var(--accent); border: 1px solid rgba(176,109,255,.2); }
 
-function selectAll(val) {
-  document.querySelectorAll('.row-cb').forEach(cb => cb.checked = val);
-  const master = document.getElementById('masterCb');
-  if (master) master.checked = val;
-  updateBulkInfo();
-}
+    /* ── pre-event ── */
+    .pre-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin-top: .5rem;
+    }
+    .pre-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1rem 1.2rem;
+      transition: border-color .2s;
+    }
+    .pre-card:hover { border-color: rgba(34,211,238,.3); }
+    .pre-card-lbl {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .65rem; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--cyan); margin-bottom: .4rem;
+    }
+    .pre-card-val { color: var(--dim); font-size: .92rem; font-weight: 500; }
 
-function masterCheck(cb) {
-  document.querySelectorAll('.row-cb').forEach(r => r.checked = cb.checked);
-  updateBulkInfo();
-}
+    /* ── round cards ── */
+    .round-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.4rem 1.6rem; margin-bottom: 1rem;
+      position: relative; overflow: hidden;
+      transition: border-color .25s;
+    }
+    .round-card::after {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--accent), var(--neon));
+    }
+    .round-card:hover { border-color: rgba(176,109,255,.3); }
+    .round-lbl {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: .68rem; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--accent2); margin-bottom: .35rem;
+    }
+    .round-name {
+      font-family: 'Orbitron', monospace;
+      font-size: 1rem; font-weight: 700;
+      color: var(--text); margin-bottom: .9rem;
+    }
+    .round-body p { color: var(--dim); margin-bottom: .6rem; font-size: .95rem; }
+    .round-body ul { padding-left: 1.2rem; }
+    .round-body ul li { color: var(--dim); margin-bottom: .4rem; font-size: .92rem; }
+    .round-body ul li b { color: var(--accent); }
 
-function getSelectedScholars() {
-  return Array.from(document.querySelectorAll('.row-cb:checked'))
-    .map(cb => currentStudents[parseInt(cb.getAttribute('data-i'))]?.scholarNo)
-    .filter(Boolean);
-}
+    /* ── scoring table ── */
+    .score-table { width: 100%; border-collapse: collapse; margin-top: .75rem; }
+    .score-table th, .score-table td {
+      text-align: left; padding: .7rem 1rem;
+      font-size: .9rem; border-bottom: 1px solid var(--border);
+    }
+    .score-table th {
+      font-family: 'Share Tech Mono', monospace;
+      color: var(--cyan); font-weight: 400;
+      font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+    }
+    .score-table td { color: var(--dim); }
+    .score-table td:last-child { color: var(--accent); font-weight: 700; font-family: 'Orbitron', monospace; font-size: .88rem; }
+    .score-table tr:last-child td { border-bottom: none; color: var(--text); font-weight: 700; }
+    .score-table tr:last-child td:last-child { color: var(--neon); }
+    .score-table tr { transition: background .2s; }
+    .score-table tbody tr:not(:last-child):hover { background: rgba(176,109,255,.04); }
 
-// ── MARK MODAL ──
-function openMarkModal() {
-  const sel = getSelectedScholars();
-  if (sel.length === 0) { showToast('Select at least one student', 'error'); return; }
-  document.getElementById('markModalBody').textContent = `Apply marks to ${sel.length} selected student(s).`;
-  document.getElementById('markModalInput').value = '';
-  openModal('markModal');
-}
+    .tiebreaker-note {
+      margin-top: 1rem;
+      padding: .75rem 1rem;
+      background: rgba(34,211,238,.05); border: 1px solid rgba(34,211,238,.15);
+      border-radius: 8px; color: var(--dim); font-size: .88rem;
+    }
+    .tiebreaker-note b { color: var(--cyan); }
 
-// Single batch call — one request for all selected students
-async function applyBulkMarks() {
-  const val = parseFloat(document.getElementById('markModalInput').value);
-  if (isNaN(val) || val < 0 || val > 10) { showToast('Invalid marks (0–10)', 'error'); return; }
-  const scholars = getSelectedScholars();
-  closeModal('markModal');
+    /* ── rules ── */
+    .rules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .rule-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.3rem 1.5rem;
+    }
+    .rule-card.allowed { border-color: rgba(74,222,128,.2); }
+    .rule-card.banned  { border-color: rgba(239,68,68,.2); }
+    .rule-title {
+      font-family: 'Orbitron', monospace;
+      font-size: .82rem; font-weight: 700;
+      margin-bottom: 1rem; letter-spacing: .05em;
+    }
+    .rule-card.allowed .rule-title { color: var(--green); }
+    .rule-card.banned  .rule-title { color: #f87171; }
+    .rule-list { list-style: none; padding: 0; }
+    .rule-list li {
+      color: var(--dim); font-size: .9rem;
+      padding: .35rem 0; padding-left: 1.4rem;
+      position: relative; border-bottom: 1px solid var(--border);
+    }
+    .rule-list li:last-child { border-bottom: none; }
+    .rule-list li::before { position: absolute; left: 0; }
+    .rule-card.allowed .rule-list li::before { content: '✓'; color: var(--green); }
+    .rule-card.banned  .rule-list li::before { content: '✕'; color: #f87171; }
 
-  const res = await nocorsAction({
-    path: 'admin/marks/batch', password: ADMIN_PASS,
-    eventName: currentEvent,
-    scholarNos: scholars.join(','),
-    marks: val
-  });
+    /* ── hosts ── */
+    .host-grid { display: flex; flex-direction: column; gap: .7rem; }
+    .host-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: .9rem 1.2rem;
+      display: flex; align-items: center; gap: .8rem;
+      font-size: .95rem; color: var(--text); font-weight: 500;
+      transition: border-color .2s, background .2s;
+    }
+    .host-item:hover { border-color: rgba(176,109,255,.3); background: var(--surface2); }
+    .host-tag {
+      background: rgba(176,109,255,.1); color: var(--accent);
+      border: 1px solid rgba(176,109,255,.25);
+      border-radius: 6px; font-size: .68rem; font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase;
+      padding: .22rem .6rem; white-space: nowrap;
+      font-family: 'Share Tech Mono', monospace;
+    }
 
-  if (res && res.success) {
-    scholars.forEach(scholar => {
-      const s = allStudents.find(st => String(st.scholarNo) === String(scholar));
-      if (s) s.marks = val;
-    });
-    showToast(`Saved marks for ${res.updated}/${scholars.length} students`, 'success');
-    applyFilter();
-    updateStats();
-  } else {
-    showToast('Failed to save marks', 'error');
-  }
-}
+    /* ── divider ── */
+    .div { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
 
-// ── DELETE / REMOVE ──
-function openDeleteModal() {
-  const sel = getSelectedScholars();
-  if (sel.length === 0) { showToast('Select at least one student', 'error'); return; }
-  document.getElementById('deleteModalBody').textContent = `Remove ${sel.length} student(s) from the local view of ${currentEvent}?`;
-  openModal('deleteModal');
-}
+    /* ── section block ── */
+    .sec { margin-bottom: 1.5rem; }
 
-function confirmDelete() {
-  const scholars = getSelectedScholars();
-  allStudents = allStudents.filter(s => !scholars.includes(String(s.scholarNo)));
-  allEvents[currentEvent] = allStudents;
-  closeModal('deleteModal');
-  showToast(`Removed ${scholars.length} student(s) from view`, 'success');
-  renderRightPanel();
-}
+    /* ── scroll reveal ── */
+    .reveal {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
-// ── AUTO RANK ──
-// Only refreshes the current event after ranking — not all 20
-async function doAutoRank() {
-  closeModal('rankModal');
-  const res = await nocorsAction({
-    path: 'admin/auto-rank', password: ADMIN_PASS,
-    eventName: currentEvent
-  });
-  if (res && res.success) {
-    showToast(`Ranked ${res.ranked || ''} students! Refreshing...`, 'success');
-    await refreshCurrentEvent();
-  } else {
-    showToast('Auto-rank failed', 'error');
-  }
-}
+    /* ── stat bar ── */
+    .stat-row {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1rem; margin-top: .5rem;
+    }
+    .stat-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.2rem; text-align: center;
+      position: relative; overflow: hidden;
+      transition: border-color .25s, transform .25s;
+    }
+    .stat-box:hover { border-color: rgba(176,109,255,.4); transform: translateY(-3px); }
+    .stat-box::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--neon));
+    }
+    .stat-num {
+      font-family: 'Orbitron', monospace;
+      font-size: 2rem; font-weight: 900;
+      background: linear-gradient(135deg, var(--accent), var(--neon));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .stat-lbl {
+      color: var(--muted); font-size: .78rem; font-weight: 600;
+      letter-spacing: .1em; text-transform: uppercase; margin-top: .25rem;
+    }
 
-// ── CSV EXPORT ──
-function exportCSV() {
-  if (!allStudents.length) { showToast('No data to export', 'error'); return; }
-  const headers = ['Scholar Number','Name','Class','Selected','Marks','Rank','Team Name'];
-  const rows = allStudents.map(s => [
-    `"${s.scholarNo}"`, `"${s.name}"`, `"${s.class||''}"`,
-    `"${s.selected||false}"`, `"${s.marks||0}"`, `"${s.rank||0}"`, `"${s.teamName||''}"`
-  ]);
-  const csv  = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href     = url;
-  a.download = `${currentEvent}_Results_${new Date().toISOString().split('T')[0]}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('CSV exported!', 'success');
-}
+    /* ── REALISTIC GLITCH ── */
+    .glitch-wrap {
+      position: relative;
+      display: inline-block;
+      /* random trigger via animation */
+      animation: glitch-trigger 6s steps(1) infinite;
+    }
 
-// ── MODAL HELPERS ──
-function openModal(id)  { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.modal-overlay').forEach(m =>
-  m.addEventListener('click', e => { if(e.target === m) m.classList.remove('open'); })
-);
+    /* The two chromatic aberration layers */
+    .glitch-wrap::before,
+    .glitch-wrap::after {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: inherit;
+      line-height: inherit;
+      letter-spacing: inherit;
+      white-space: nowrap;
+      overflow: hidden;
+      pointer-events: none;
+    }
 
-// ── MOBILE ──
-function toggleMobilePanel() {
-  const panel = document.querySelector('.left-panel');
-  const btn   = document.getElementById('mobilePanelToggle');
-  if (!panel) return;
-  panel.classList.toggle('open');
-  btn.textContent = panel.classList.contains('open') ? '✕' : '☰';
-}
+    /* RED / magenta channel — left offset */
+    .glitch-wrap::before {
+      color: #ff2d78;
+      text-shadow: none;
+      left: 0; top: 0;
+      animation: glitch-red 6s steps(1) infinite;
+      opacity: 0;
+      mix-blend-mode: screen;
+    }
 
-// ── TOAST ──
-function showToast(msg, type = 'success') {
-  const c = document.getElementById('toastContainer');
-  const t = document.createElement('div');
-  t.className = `toast ${type}`;
-  t.innerHTML = `<span>${type==='success'?'✓':'✗'}</span><span>${msg}</span>`;
-  c.appendChild(t);
-  setTimeout(() => { t.style.animation = 'slideDown 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, 3000);
-}
-</script>
-</body>
-</html>
+    /* CYAN channel — right offset */
+    .glitch-wrap::after {
+      color: #00f0ff;
+      text-shadow: none;
+      left: 0; top: 0;
+      animation: glitch-cyan 6s steps(1) infinite;
+      opacity: 0;
+      mix-blend-mode: screen;
+    }
+
+    /* Main text jitter */
+    @keyframes glitch-trigger {
+      0%,  9%  { transform: none; }
+      10%       { transform: translate(-2px, 1px) skewX(-1deg); }
+      10.5%     { transform: translate(3px, -1px) skewX(2deg); }
+      11%       { transform: translate(-1px, 2px) skewX(-1deg); }
+      11.5%     { transform: none; }
+      /* second burst */
+      42%       { transform: none; }
+      42.5%     { transform: translate(4px, 0) skewX(3deg); }
+      43%        { transform: translate(-3px, 1px); }
+      43.5%     { transform: translate(1px, -1px) skewX(-2deg); }
+      44%        { transform: none; }
+      /* third burst */
+      77%       { transform: none; }
+      77.3%     { transform: translate(-4px, -1px) skewX(4deg); }
+      77.6%     { transform: translate(2px, 2px) skewX(-2deg); }
+      77.9%     { transform: translate(-1px, 0); }
+      78%        { transform: none; }
+      100%      { transform: none; }
+    }
+
+    @keyframes glitch-red {
+      0%,  9.9%  { opacity: 0; transform: none; clip-path: none; }
+      10%         { opacity: .8; transform: translate(-4px, 0); clip-path: inset(5% 0 80% 0); }
+      10.3%       { clip-path: inset(55% 0 30% 0); transform: translate(3px, 0); }
+      10.6%       { clip-path: inset(30% 0 55% 0); transform: translate(-3px, 1px); }
+      10.9%       { clip-path: inset(75% 0 10% 0); transform: translate(4px, 0); }
+      11%         { opacity: 0; transform: none; clip-path: none; }
+
+      42%,  42.4% { opacity: 0; }
+      42.5%       { opacity: .9; transform: translate(-5px, 1px); clip-path: inset(10% 0 70% 0); }
+      42.7%       { clip-path: inset(40% 0 40% 0); transform: translate(4px, -1px); }
+      43%         { clip-path: inset(65% 0 15% 0); transform: translate(-2px, 0); }
+      43.2%       { opacity: 0; clip-path: none; }
+
+      77%,  77.2% { opacity: 0; }
+      77.3%       { opacity: .85; transform: translate(-3px, -1px); clip-path: inset(20% 0 60% 0); }
+      77.5%       { clip-path: inset(50% 0 25% 0); transform: translate(5px, 0); }
+      77.7%       { clip-path: inset(70% 0 5% 0); transform: translate(-4px, 1px); }
+      77.9%       { opacity: 0; clip-path: none; }
+      100%        { opacity: 0; }
+    }
+
+    @keyframes glitch-cyan {
+      0%,  9.9%  { opacity: 0; transform: none; clip-path: none; }
+      10%         { opacity: .7; transform: translate(4px, -1px); clip-path: inset(15% 0 70% 0); }
+      10.3%       { clip-path: inset(45% 0 40% 0); transform: translate(-3px, 0); }
+      10.6%       { clip-path: inset(65% 0 20% 0); transform: translate(3px, 1px); }
+      10.9%       { clip-path: inset(85% 0 5% 0); transform: translate(-4px, 0); }
+      11%         { opacity: 0; transform: none; clip-path: none; }
+
+      42%,  42.4% { opacity: 0; }
+      42.5%       { opacity: .75; transform: translate(5px, -1px); clip-path: inset(5% 0 80% 0); }
+      42.7%       { clip-path: inset(30% 0 55% 0); transform: translate(-4px, 1px); }
+      43%         { clip-path: inset(60% 0 25% 0); transform: translate(3px, 0); }
+      43.2%       { opacity: 0; clip-path: none;
